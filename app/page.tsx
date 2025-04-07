@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Upload, Download, Copy, FileText } from "lucide-react"
+import { Upload, Copy, FileText } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import rehypeRaw from "rehype-raw"
@@ -98,160 +98,6 @@ Enjoy using the converter!`)
 
   const triggerFileInput = () => {
     fileInputRef.current?.click()
-  }
-
-  const downloadAsWord = () => {
-    // Get the content div from the Word preview
-    const wordContent = wordPreviewRef.current?.querySelector('.word-preview')?.innerHTML || ""
-    
-    // Create a blob with HTML content that Word can open
-    const htmlContent = `
-      <html xmlns:o="urn:schemas-microsoft-com:office:office" 
-            xmlns:w="urn:schemas-microsoft-com:office:word" 
-            xmlns="http://www.w3.org/TR/REC-html40">
-        <head>
-          <meta charset="utf-8">
-          <title>Exported Document</title>
-          <style>
-            /* Basic document styling */
-            body {
-              font-family: 'Arial', sans-serif;
-              line-height: 1.5;
-              color: #333;
-              margin: 1in;
-            }
-            
-            /* Headings */
-            h1 {
-              font-size: 20pt;
-              font-weight: 600;
-              color: #333;
-              margin-top: 14pt;
-              margin-bottom: 10pt;
-              font-family: 'Arial', sans-serif;
-            }
-            h2 {
-              font-size: 16pt;
-              font-weight: 600;
-              color: #333;
-              margin-top: 12pt;
-              margin-bottom: 8pt;
-              font-family: 'Arial', sans-serif;
-            }
-            h3 {
-              font-size: 14pt;
-              font-weight: 600;
-              color: #333;
-              margin-top: 10pt;
-              margin-bottom: 6pt;
-              font-family: 'Arial', sans-serif;
-            }
-            h4 {
-              font-size: 12pt;
-              font-weight: 600;
-              color: #333;
-              margin-top: 8pt;
-              margin-bottom: 4pt;
-              font-family: 'Arial', sans-serif;
-            }
-            
-            /* Paragraphs */
-            p {
-              font-size: 11pt;
-              margin-bottom: 8pt;
-            }
-            
-            /* Lists */
-            ul {
-              list-style-type: disc;
-              margin-left: 1cm;
-              margin-bottom: 10pt;
-            }
-            ol {
-              list-style-type: decimal;
-              margin-left: 1cm;
-              margin-bottom: 10pt;
-            }
-            li {
-              margin-bottom: 4pt;
-            }
-            
-            /* Inline formatting */
-            strong {
-              font-weight: bold;
-            }
-            em {
-              font-style: italic;
-            }
-            
-            /* Links */
-            a {
-              color: #0070f3;
-              text-decoration: underline;
-            }
-            
-            /* Code blocks */
-            pre {
-              background-color: #f6f8fa;
-              border: 1pt solid #ddd;
-              padding: 8pt;
-              margin: 10pt 0;
-              font-family: 'Consolas', 'Courier New', monospace;
-              font-size: 10pt;
-              overflow-x: auto;
-            }
-            code {
-              font-family: 'Consolas', 'Courier New', monospace;
-              background-color: #f6f8fa;
-              border: 1pt solid #e1e4e8;
-              padding: 2pt 4pt;
-              font-size: 10pt;
-              border-radius: 3pt;
-            }
-            
-            /* Blockquotes */
-            blockquote {
-              margin: 10pt 0;
-              padding: 8pt 14pt;
-              border-left: 4pt solid #ddd;
-              background-color: #f9f9f9;
-              font-style: italic;
-            }
-            
-            /* Horizontal rules */
-            hr {
-              border: none;
-              border-top: 1pt solid #ddd;
-              margin: 14pt 0;
-            }
-            
-            /* Tables */
-            table {
-              border-collapse: collapse;
-              width: 100%;
-              margin: 10pt 0;
-            }
-            th, td {
-              border: 1pt solid #ddd;
-              padding: 6pt;
-            }
-            th {
-              background-color: #f6f8fa;
-              font-weight: bold;
-            }
-          </style>
-        </head>
-        <body>
-          ${wordContent}
-        </body>
-      </html>
-    `
-
-    const blob = new Blob([htmlContent], { type: "application/msword" })
-    const link = document.createElement("a")
-    link.href = URL.createObjectURL(blob)
-    link.download = "document.doc"
-    link.click()
   }
 
   const copyWordContent = () => {
@@ -382,9 +228,6 @@ Enjoy using the converter!`)
             <Button variant="outline" size="sm" onClick={copyWordContent}>
               <Copy className="mr-2 h-4 w-4" /> Copy as Rich Text
             </Button>
-            <Button size="sm" onClick={downloadAsWord}>
-              <Download className="mr-2 h-4 w-4" /> Download as Word
-            </Button>
           </div>
 
           <div ref={wordPreviewRef} className="border rounded-lg shadow-md overflow-auto h-[500px] bg-[#f0f0f0]">
@@ -407,7 +250,7 @@ Enjoy using the converter!`)
                   pre({node, children, ...props}) {
                     return (
                       <pre
-                        className="bg-[#f6f8fa] p-4 rounded-md overflow-auto border border-[#ddd]"
+                        className="bg-[#f6f8fa] p-3 rounded-md overflow-auto border border-[#ddd] text-sm whitespace-pre-wrap"
                         {...props}
                       >
                         {children}
@@ -415,16 +258,16 @@ Enjoy using the converter!`)
                     )
                   },
                   ul({node, ...props}) {
-                    return <ul className="list-disc pl-8 mb-4" {...props} />
+                    return <ul className="list-disc pl-6 mb-3" {...props} />
                   },
                   ol({node, ...props}) {
-                    return <ol className="list-decimal pl-8 mb-4" {...props} />
+                    return <ol className="list-decimal pl-6 mb-3" {...props} />
                   },
                   li({node, ...props}) {
-                    return <li className="mb-1" {...props} />
+                    return <li className="mb-1 text-base" {...props} />
                   },
                   blockquote({node, ...props}) {
-                    return <blockquote className="border-l-4 border-[#ddd] bg-[#f9f9f9] pl-4 py-1 italic" {...props} />
+                    return <blockquote className="border-l-4 border-[#ddd] bg-[#f9f9f9] pl-3 py-1 italic" {...props} />
                   }
                 }}
               >
