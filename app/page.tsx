@@ -10,9 +10,43 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Upload, Download, Copy, FileText } from "lucide-react"
 import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import rehypeRaw from "rehype-raw"
+import rehypeSanitize from "rehype-sanitize"
 
 export default function MarkdownToWordConverter() {
-  const [markdownContent, setMarkdownContent] = useState<string>("")
+  const [markdownContent, setMarkdownContent] = useState<string>(`# Welcome to Markdown to Word Converter!
+
+## Getting Started
+
+This tool helps you convert **Markdown** to *Word documents* while preserving formatting.
+
+### Features
+
+- Real-time preview
+- Export to Word (.docx)
+- Copy as rich text
+- Side-by-side comparison
+
+#### Code Example
+
+\`\`\`javascript
+function hello() {
+  console.log("Hello, World!");
+}
+\`\`\`
+
+> Easily create professional documents from your Markdown content.
+
+[Visit our GitHub repository](https://github.com/example/markdown-to-word)
+
+---
+
+1. Write or paste Markdown
+2. Preview the formatting
+3. Export as Word document
+
+Enjoy using the converter!`)
   const [activeTab, setActiveTab] = useState<string>("paste")
   const fileInputRef = useRef<HTMLInputElement>(null)
   const markdownPreviewRef = useRef<HTMLDivElement>(null)
@@ -176,6 +210,51 @@ export default function MarkdownToWordConverter() {
             </TabsContent>
           </Tabs>
 
+          <div ref={markdownPreviewRef} className="border rounded-lg p-4 bg-[#0d1117] text-white h-[500px] overflow-auto dark">
+            <h3 className="text-lg font-medium mb-2 text-white">Markdown Preview</h3>
+            <Separator className="mb-4 bg-gray-700" />
+            <div className="prose prose-sm md:prose-base lg:prose max-w-none dark:prose-invert 
+                 prose-headings:text-white prose-headings:font-semibold
+                 prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg 
+                 prose-a:no-underline
+                 prose-blockquote:border-l-4 prose-blockquote:pl-4
+                 prose-ol:list-decimal prose-ul:list-disc">
+              <ReactMarkdown 
+                remarkPlugins={[remarkGfm]} 
+                rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                components={{
+                  code({node, inline, className, children, ...props}) {
+                    return (
+                      <code
+                        className={`${inline ? 'bg-[#161b22] text-[#c9d1d9] px-1 py-0.5 rounded text-sm' : ''}`}
+                        {...props}
+                      >
+                        {children}
+                      </code>
+                    )
+                  },
+                  pre({node, children, ...props}) {
+                    return (
+                      <pre
+                        className="bg-[#161b22] p-4 rounded-md overflow-auto border border-[#30363d]"
+                        {...props}
+                      >
+                        {children}
+                      </pre>
+                    )
+                  }
+                }}
+              >
+                {markdownContent || "Preview will appear here..."}
+              </ReactMarkdown>
+            </div>
+          </div>
+        </div>
+
+        {/* Right side - Word preview */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">Word Document</h2>
+
           <div className="flex justify-end space-x-2 mb-2">
             <Button variant="outline" size="sm" onClick={copyWordContent}>
               <Copy className="mr-2 h-4 w-4" /> Copy as Rich Text
@@ -185,32 +264,14 @@ export default function MarkdownToWordConverter() {
             </Button>
           </div>
 
-          <div ref={markdownPreviewRef} className="border rounded-lg p-4 bg-muted/30 h-[500px] overflow-auto">
-            <h3 className="text-lg font-medium mb-2">Markdown Preview</h3>
-            <Separator className="mb-4" />
-            <div className="prose max-w-none dark:prose-invert">
-              <ReactMarkdown>{markdownContent}</ReactMarkdown>
-            </div>
-          </div>
-        </div>
-
-        {/* Right side - Word preview */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Word Document</h2>
-
-          <div className="flex justify-end space-x-2 mb-2 invisible lg:visible">
-            {/* These buttons are duplicated here for symmetry in the UI, but invisible on large screens */}
-            <Button variant="outline" size="sm" disabled>
-              <Copy className="mr-2 h-4 w-4" /> Copy as Rich Text
-            </Button>
-            <Button size="sm" disabled>
-              <Download className="mr-2 h-4 w-4" /> Download as Word
-            </Button>
-          </div>
-
           <div ref={wordPreviewRef} className="border rounded-lg p-4 bg-white h-[500px] shadow-sm overflow-auto">
-            <div className="word-preview prose max-w-none">
-              <ReactMarkdown>{markdownContent}</ReactMarkdown>
+            <div className="word-preview prose prose-sm md:prose-base lg:prose max-w-none prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-blue-600 prose-strong:font-bold prose-em:italic prose-ul:list-disc prose-ol:list-decimal">
+              <ReactMarkdown 
+                remarkPlugins={[remarkGfm]} 
+                rehypePlugins={[rehypeRaw, rehypeSanitize]}
+              >
+                {markdownContent || "Preview will appear here..."}
+              </ReactMarkdown>
             </div>
           </div>
 

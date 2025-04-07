@@ -47,6 +47,14 @@ body {
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Markdown code colors - light theme */
+    --md-code-bg: 210 25% 98%;
+    --md-code-text: 221 39% 11%;
+    --md-pre-bg: 210 25% 96%;
+    --md-blockquote-border: 220 13% 91%;
+    --md-blockquote-text: 215 14% 34%;
+    --md-link: 212 100% 48%;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -81,6 +89,14 @@ body {
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Markdown code colors - GitHub dark theme */
+    --md-code-bg: 215 14% 10%;
+    --md-code-text: 210 25% 88%;
+    --md-pre-bg: 215 14% 10%;
+    --md-blockquote-border: 218 11% 30%;
+    --md-blockquote-text: 210 10% 70%;
+    --md-link: 212 100% 65%;
   }
 }
 
@@ -91,4 +107,29 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* GitHub-style markdown rendering */
+.dark .prose pre {
+  background-color: hsl(var(--md-pre-bg));
+  color: hsl(var(--md-code-text));
+  border: 1px solid hsl(var(--border));
+}
+
+.dark .prose code {
+  background-color: hsl(var(--md-code-bg));
+  color: hsl(var(--md-code-text));
+}
+
+.dark .prose blockquote {
+  border-left-color: hsl(var(--md-blockquote-border));
+  color: hsl(var(--md-blockquote-text));
+}
+
+.dark .prose a {
+  color: hsl(var(--md-link));
+}
+
+.dark .prose hr {
+  border-color: hsl(var(--border));
 }
