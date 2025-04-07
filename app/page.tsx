@@ -1,21 +1,22 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Upload, Copy, FileText } from "lucide-react"
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
-import rehypeRaw from "rehype-raw"
-import rehypeSanitize from "rehype-sanitize"
+import { useState, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Upload, Copy, FileText } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 
 export default function MarkdownToWordConverter() {
-  const [markdownContent, setMarkdownContent] = useState<string>(`# Welcome to Markdown to Word Converter!
+  const [markdownContent, setMarkdownContent] =
+    useState<string>(`# Welcome to Markdown to Word Converter!
 
 ## Getting Started
 
@@ -46,166 +47,170 @@ function hello() {
 2. Preview the formatting
 3. Export as Word document
 
-Enjoy using the converter!`)
-  const [activeTab, setActiveTab] = useState<string>("paste")
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const markdownPreviewRef = useRef<HTMLDivElement>(null)
-  const wordPreviewRef = useRef<HTMLDivElement>(null)
+Enjoy using the converter!`);
+  const [activeTab, setActiveTab] = useState<string>("paste");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const markdownPreviewRef = useRef<HTMLDivElement>(null);
+  const wordPreviewRef = useRef<HTMLDivElement>(null);
 
   // Synchronize scrolling between the two preview panes
   useEffect(() => {
-    const markdownPreview = markdownPreviewRef.current
-    const wordPreview = wordPreviewRef.current
-
-    if (!markdownPreview || !wordPreview) return
-
-    const handleMarkdownScroll = () => {
-      if (!markdownPreview || !wordPreview) return
-      const scrollPercentage = markdownPreview.scrollTop / (markdownPreview.scrollHeight - markdownPreview.clientHeight)
-      wordPreview.scrollTop = scrollPercentage * (wordPreview.scrollHeight - wordPreview.clientHeight)
-    }
-
-    const handleWordScroll = () => {
-      if (!markdownPreview || !wordPreview) return
-      const scrollPercentage = wordPreview.scrollTop / (wordPreview.scrollHeight - wordPreview.clientHeight)
-      markdownPreview.scrollTop = scrollPercentage * (markdownPreview.scrollHeight - markdownPreview.clientHeight)
-    }
-
-    markdownPreview.addEventListener("scroll", handleMarkdownScroll)
-    wordPreview.addEventListener("scroll", handleWordScroll)
-
-    return () => {
-      markdownPreview.removeEventListener("scroll", handleMarkdownScroll)
-      wordPreview.removeEventListener("scroll", handleWordScroll)
-    }
-  }, [])
+    // Removed scroll synchronization since containers now expand with content
+    return () => {};
+  }, []);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onload = (e) => {
-        const content = e.target?.result as string
-        setMarkdownContent(content)
-      }
-      reader.readAsText(file)
+        const content = e.target?.result as string;
+        setMarkdownContent(content);
+      };
+      reader.readAsText(file);
     }
-  }
+  };
 
   const handlePaste = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMarkdownContent(e.target.value)
-  }
+    setMarkdownContent(e.target.value);
+  };
 
   const triggerFileInput = () => {
-    fileInputRef.current?.click()
-  }
+    fileInputRef.current?.click();
+  };
 
   const copyWordContent = () => {
-    const wordPreviewContent = wordPreviewRef.current?.querySelector('.word-preview')
-    if (!wordPreviewContent) return
+    const wordPreviewContent =
+      wordPreviewRef.current?.querySelector(".word-preview");
+    if (!wordPreviewContent) return;
 
     // Create a temporary element with the content
-    const tempDiv = document.createElement("div")
-    tempDiv.innerHTML = wordPreviewContent.innerHTML
-    
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = wordPreviewContent.innerHTML;
+
     // Apply word preview styles to ensure light theme is preserved
-    tempDiv.className = "word-preview"
-    tempDiv.style.position = "fixed"
-    tempDiv.style.left = "-99999px"
-    tempDiv.style.backgroundColor = "white"
-    tempDiv.style.color = "#333"
-    tempDiv.setAttribute("contenteditable", "true")
-    document.body.appendChild(tempDiv)
+    tempDiv.className = "word-preview";
+    tempDiv.style.position = "fixed";
+    tempDiv.style.left = "-99999px";
+    tempDiv.style.backgroundColor = "white";
+    tempDiv.style.color = "#333";
+    tempDiv.setAttribute("contenteditable", "true");
+    document.body.appendChild(tempDiv);
 
     // Select the content
-    const selection = window.getSelection()
-    const range = document.createRange()
-    range.selectNodeContents(tempDiv)
-    selection?.removeAllRanges()
-    selection?.addRange(range)
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(tempDiv);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
 
     // Execute copy command with rich text format
-    document.execCommand("copy")
+    document.execCommand("copy");
 
     // Clean up
-    document.body.removeChild(tempDiv)
-    selection?.removeAllRanges()
+    document.body.removeChild(tempDiv);
+    selection?.removeAllRanges();
 
-    alert("Content copied to clipboard in rich text format!")
-  }
+    alert("Content copied to clipboard in rich text format!");
+  };
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold text-center mb-8">Markdown to Word Converter</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">
+        Markdown to Word Converter
+      </h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left side - Markdown input and preview */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Markdown</h2>
-
-          <Tabs defaultValue="paste" value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="paste">Paste Markdown</TabsTrigger>
-              <TabsTrigger value="upload">Upload File</TabsTrigger>
-            </TabsList>
-            <TabsContent value="paste" className="space-y-4">
-              <Textarea
-                placeholder="Paste your markdown content here..."
-                className="min-h-[300px]"
-                value={markdownContent}
-                onChange={handlePaste}
-              />
-            </TabsContent>
-            <TabsContent value="upload" className="space-y-4">
-              <Card>
-                <CardContent className="pt-6">
-                  <div
-                    className="border-2 border-dashed rounded-lg p-12 text-center cursor-pointer hover:bg-muted/50 transition-colors"
+      {/* Row 1: Input Section (Centered) */}
+      <div className="mb-8 max-w-3xl mx-auto">
+        <Tabs
+          defaultValue="paste"
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="w-full"
+        >
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="paste">Paste Markdown</TabsTrigger>
+            <TabsTrigger value="upload">Upload File</TabsTrigger>
+          </TabsList>
+          <TabsContent value="paste" className="space-y-4">
+            <Textarea
+              placeholder="Paste your markdown content here..."
+              className="min-h-[300px]"
+              value={markdownContent}
+              onChange={handlePaste}
+            />
+          </TabsContent>
+          <TabsContent value="upload" className="space-y-4">
+            <Card>
+              <CardContent className="pt-6">
+                <div
+                  className="border-2 border-dashed rounded-lg p-12 text-center cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={triggerFileInput}
+                >
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept=".md, .markdown, .txt"
+                    onChange={handleFileUpload}
+                  />
+                  <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Click to upload or drag and drop
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Supports .md, .markdown, .txt
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="mt-4"
                     onClick={triggerFileInput}
                   >
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      className="hidden"
-                      accept=".md, .markdown, .txt"
-                      onChange={handleFileUpload}
-                    />
-                    <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                    <p className="text-sm text-muted-foreground mb-2">Click to upload or drag and drop</p>
-                    <p className="text-xs text-muted-foreground">Supports .md, .markdown, .txt</p>
-                    <Button variant="outline" className="mt-4" onClick={triggerFileInput}>
-                      <Upload className="mr-2 h-4 w-4" /> Select File
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+                    <Upload className="mr-2 h-4 w-4" /> Select File
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
 
-          <div ref={markdownPreviewRef} className="border rounded-lg p-4 bg-[#0d1117] text-white h-[500px] overflow-auto dark">
-            <h3 className="text-lg font-medium mb-2 text-white">Markdown Preview</h3>
-            <Separator className="mb-4 bg-gray-700" />
-            <div className="prose prose-sm md:prose-base lg:prose max-w-none dark:prose-invert 
+      {/* Row 2: Preview Sections (Side by Side) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left side - Markdown preview */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold mb-2">Markdown Preview</h3>
+          <div
+            ref={markdownPreviewRef}
+            className="border rounded-lg p-4 bg-[#0d1117] text-white dark"
+          >
+            <div
+              className="prose prose-sm md:prose-base lg:prose max-w-none dark:prose-invert 
                  prose-headings:text-white prose-headings:font-semibold
                  prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg 
                  prose-a:no-underline
                  prose-blockquote:border-l-4 prose-blockquote:pl-4
-                 prose-ol:list-decimal prose-ul:list-disc">
-              <ReactMarkdown 
-                remarkPlugins={[remarkGfm]} 
+                 prose-ol:list-decimal prose-ul:list-disc"
+            >
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw, rehypeSanitize]}
                 components={{
-                  code({node, inline, className, children, ...props}) {
+                  code({ node, inline, className, children, ...props }: any) {
                     return (
                       <code
-                        className={`${inline ? 'bg-[#161b22] text-[#c9d1d9] px-1 py-0.5 rounded text-sm' : ''}`}
+                        className={`${
+                          inline
+                            ? "bg-[#161b22] text-[#c9d1d9] px-1 py-0.5 rounded text-sm"
+                            : ""
+                        }`}
                         {...props}
                       >
                         {children}
                       </code>
-                    )
+                    );
                   },
-                  pre({node, children, ...props}) {
+                  pre({ node, children, ...props }) {
                     return (
                       <pre
                         className="bg-[#161b22] p-4 rounded-md overflow-auto border border-[#30363d]"
@@ -213,8 +218,8 @@ Enjoy using the converter!`)
                       >
                         {children}
                       </pre>
-                    )
-                  }
+                    );
+                  },
                 }}
               >
                 {markdownContent || "Preview will appear here..."}
@@ -225,32 +230,38 @@ Enjoy using the converter!`)
 
         {/* Right side - Word preview */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Word Document</h2>
-
-          <div className="flex justify-end space-x-2 mb-2">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-lg font-semibold">Word Preview</h3>
             <Button variant="outline" size="sm" onClick={copyWordContent}>
               <Copy className="mr-2 h-4 w-4" /> Copy as Rich Text
             </Button>
           </div>
 
-          <div ref={wordPreviewRef} className="border rounded-lg shadow-md overflow-auto h-[500px] bg-[#f0f0f0]">
+          <div
+            ref={wordPreviewRef}
+            className="border rounded-lg shadow-md bg-[#f0f0f0]"
+          >
             {/* Word-like document area with page styling */}
-            <div className="word-preview bg-white rounded shadow-sm max-w-[8.5in] mx-auto my-6 py-8 px-8 min-h-[11in]">
-              <ReactMarkdown 
-                remarkPlugins={[remarkGfm]} 
+            <div className="word-preview bg-white rounded shadow-sm max-w-[8.5in] mx-auto my-6 py-8 px-8">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw, rehypeSanitize]}
                 components={{
-                  code({node, inline, className, children, ...props}) {
+                  code({ node, inline, className, children, ...props }: any) {
                     return (
                       <code
-                        className={`${inline ? 'bg-[#f6f8fa] text-[#333] px-1 py-0.5 rounded text-sm border border-[#e1e4e8]' : ''}`}
+                        className={`${
+                          inline
+                            ? "bg-[#f6f8fa] text-[#333] px-1 py-0.5 rounded text-sm border border-[#e1e4e8]"
+                            : ""
+                        }`}
                         {...props}
                       >
                         {children}
                       </code>
-                    )
+                    );
                   },
-                  pre({node, children, ...props}) {
+                  pre({ node, children, ...props }) {
                     return (
                       <pre
                         className="bg-[#f6f8fa] p-3 rounded-md overflow-auto border border-[#ddd] text-sm whitespace-pre-wrap"
@@ -258,20 +269,25 @@ Enjoy using the converter!`)
                       >
                         {children}
                       </pre>
-                    )
+                    );
                   },
-                  ul({node, ...props}) {
-                    return <ul className="list-disc pl-6 mb-3" {...props} />
+                  ul({ node, ...props }) {
+                    return <ul className="list-disc pl-6 mb-3" {...props} />;
                   },
-                  ol({node, ...props}) {
-                    return <ol className="list-decimal pl-6 mb-3" {...props} />
+                  ol({ node, ...props }) {
+                    return <ol className="list-decimal pl-6 mb-3" {...props} />;
                   },
-                  li({node, ...props}) {
-                    return <li className="mb-1 text-base" {...props} />
+                  li({ node, ...props }) {
+                    return <li className="mb-1 text-base" {...props} />;
                   },
-                  blockquote({node, ...props}) {
-                    return <blockquote className="border-l-4 border-[#ddd] bg-[#f9f9f9] pl-3 py-1 italic" {...props} />
-                  }
+                  blockquote({ node, ...props }) {
+                    return (
+                      <blockquote
+                        className="border-l-4 border-[#ddd] bg-[#f9f9f9] pl-3 py-1 italic"
+                        {...props}
+                      />
+                    );
+                  },
                 }}
               >
                 {markdownContent || "Preview will appear here..."}
@@ -281,13 +297,13 @@ Enjoy using the converter!`)
 
           <div className="text-sm text-muted-foreground mt-2">
             <p>
-              Note: The Word document preview simulates how content will appear in Microsoft Word. Some advanced
-              formatting may vary in the actual Word document.
+              Note: The Word document preview simulates how content will appear
+              in Microsoft Word. Some advanced formatting may vary in the actual
+              Word document.
             </p>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
-
