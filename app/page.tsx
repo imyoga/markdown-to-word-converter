@@ -101,6 +101,9 @@ Enjoy using the converter!`)
   }
 
   const downloadAsWord = () => {
+    // Get the content div from the Word preview
+    const wordContent = wordPreviewRef.current?.querySelector('.word-preview')?.innerHTML || ""
+    
     // Create a blob with HTML content that Word can open
     const htmlContent = `
       <html xmlns:o="urn:schemas-microsoft-com:office:office" 
@@ -110,17 +113,136 @@ Enjoy using the converter!`)
           <meta charset="utf-8">
           <title>Exported Document</title>
           <style>
-            h1 { font-size: 24pt; font-weight: bold; }
-            h2 { font-size: 18pt; font-weight: bold; }
-            h3 { font-size: 14pt; font-weight: bold; }
-            p { font-size: 12pt; }
-            ul, ol { margin-left: 20px; }
-            strong { font-weight: bold; }
-            em { font-style: italic; }
+            /* Basic document styling */
+            body {
+              font-family: 'Arial', sans-serif;
+              line-height: 1.5;
+              color: #333;
+              margin: 1in;
+            }
+            
+            /* Headings */
+            h1 {
+              font-size: 20pt;
+              font-weight: 600;
+              color: #333;
+              margin-top: 14pt;
+              margin-bottom: 10pt;
+              font-family: 'Arial', sans-serif;
+            }
+            h2 {
+              font-size: 16pt;
+              font-weight: 600;
+              color: #333;
+              margin-top: 12pt;
+              margin-bottom: 8pt;
+              font-family: 'Arial', sans-serif;
+            }
+            h3 {
+              font-size: 14pt;
+              font-weight: 600;
+              color: #333;
+              margin-top: 10pt;
+              margin-bottom: 6pt;
+              font-family: 'Arial', sans-serif;
+            }
+            h4 {
+              font-size: 12pt;
+              font-weight: 600;
+              color: #333;
+              margin-top: 8pt;
+              margin-bottom: 4pt;
+              font-family: 'Arial', sans-serif;
+            }
+            
+            /* Paragraphs */
+            p {
+              font-size: 11pt;
+              margin-bottom: 8pt;
+            }
+            
+            /* Lists */
+            ul {
+              list-style-type: disc;
+              margin-left: 1cm;
+              margin-bottom: 10pt;
+            }
+            ol {
+              list-style-type: decimal;
+              margin-left: 1cm;
+              margin-bottom: 10pt;
+            }
+            li {
+              margin-bottom: 4pt;
+            }
+            
+            /* Inline formatting */
+            strong {
+              font-weight: bold;
+            }
+            em {
+              font-style: italic;
+            }
+            
+            /* Links */
+            a {
+              color: #0070f3;
+              text-decoration: underline;
+            }
+            
+            /* Code blocks */
+            pre {
+              background-color: #f6f8fa;
+              border: 1pt solid #ddd;
+              padding: 8pt;
+              margin: 10pt 0;
+              font-family: 'Consolas', 'Courier New', monospace;
+              font-size: 10pt;
+              overflow-x: auto;
+            }
+            code {
+              font-family: 'Consolas', 'Courier New', monospace;
+              background-color: #f6f8fa;
+              border: 1pt solid #e1e4e8;
+              padding: 2pt 4pt;
+              font-size: 10pt;
+              border-radius: 3pt;
+            }
+            
+            /* Blockquotes */
+            blockquote {
+              margin: 10pt 0;
+              padding: 8pt 14pt;
+              border-left: 4pt solid #ddd;
+              background-color: #f9f9f9;
+              font-style: italic;
+            }
+            
+            /* Horizontal rules */
+            hr {
+              border: none;
+              border-top: 1pt solid #ddd;
+              margin: 14pt 0;
+            }
+            
+            /* Tables */
+            table {
+              border-collapse: collapse;
+              width: 100%;
+              margin: 10pt 0;
+            }
+            th, td {
+              border: 1pt solid #ddd;
+              padding: 6pt;
+            }
+            th {
+              background-color: #f6f8fa;
+              font-weight: bold;
+            }
           </style>
         </head>
         <body>
-          ${wordPreviewRef.current?.innerHTML || ""}
+          ${wordContent}
         </body>
       </html>
     `
@@ -133,11 +255,12 @@ Enjoy using the converter!`)
   }
 
   const copyWordContent = () => {
-    if (!wordPreviewRef.current) return
+    const wordPreviewContent = wordPreviewRef.current?.querySelector('.word-preview')
+    if (!wordPreviewContent) return
 
     // Create a temporary element with the content
     const tempDiv = document.createElement("div")
-    tempDiv.innerHTML = wordPreviewRef.current.innerHTML
+    tempDiv.innerHTML = wordPreviewContent.innerHTML
 
     // Apply styles to make it rich text
     tempDiv.style.position = "fixed"
@@ -264,11 +387,46 @@ Enjoy using the converter!`)
             </Button>
           </div>
 
-          <div ref={wordPreviewRef} className="border rounded-lg p-4 bg-white h-[500px] shadow-sm overflow-auto">
-            <div className="word-preview prose prose-sm md:prose-base lg:prose max-w-none prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-blue-600 prose-strong:font-bold prose-em:italic prose-ul:list-disc prose-ol:list-decimal">
+          <div ref={wordPreviewRef} className="border rounded-lg shadow-md overflow-auto h-[500px] bg-[#f0f0f0]">
+            {/* Word-like document area with page styling */}
+            <div className="word-preview bg-white rounded shadow-sm max-w-[8.5in] mx-auto my-6 py-8 px-8 min-h-[11in]">
               <ReactMarkdown 
                 remarkPlugins={[remarkGfm]} 
                 rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                components={{
+                  code({node, inline, className, children, ...props}) {
+                    return (
+                      <code
+                        className={`${inline ? 'bg-[#f6f8fa] text-[#333] px-1 py-0.5 rounded text-sm border border-[#e1e4e8]' : ''}`}
+                        {...props}
+                      >
+                        {children}
+                      </code>
+                    )
+                  },
+                  pre({node, children, ...props}) {
+                    return (
+                      <pre
+                        className="bg-[#f6f8fa] p-4 rounded-md overflow-auto border border-[#ddd]"
+                        {...props}
+                      >
+                        {children}
+                      </pre>
+                    )
+                  },
+                  ul({node, ...props}) {
+                    return <ul className="list-disc pl-8 mb-4" {...props} />
+                  },
+                  ol({node, ...props}) {
+                    return <ol className="list-decimal pl-8 mb-4" {...props} />
+                  },
+                  li({node, ...props}) {
+                    return <li className="mb-1" {...props} />
+                  },
+                  blockquote({node, ...props}) {
+                    return <blockquote className="border-l-4 border-[#ddd] bg-[#f9f9f9] pl-4 py-1 italic" {...props} />
+                  }
+                }}
               >
                 {markdownContent || "Preview will appear here..."}
               </ReactMarkdown>

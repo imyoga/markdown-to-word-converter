@@ -55,6 +55,15 @@ body {
     --md-blockquote-border: 220 13% 91%;
     --md-blockquote-text: 215 14% 34%;
     --md-link: 212 100% 48%;
+
+    /* Word document colors */
+    --word-heading-primary: 214 100% 51%;
+    --word-heading-secondary: 214 100% 36%;
+    --word-heading-tertiary: 214 60% 45%;
+    --word-link: 214 100% 36%;
+    --word-blockquote-bg: 0 0% 97%;
+    --word-blockquote-border: 215 16% 80%;
+    --word-text: 0 0% 12%;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -132,4 +141,127 @@ body {
 
 .dark .prose hr {
   border-color: hsl(var(--border));
+}
+
+/* MS Word-like styling */
+.word-preview {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  color: #333;
+  padding: 1rem;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.word-preview h1 {
+  color: #333;
+  font-family: inherit;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.word-preview h2 {
+  color: #333;
+  font-family: inherit;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.word-preview h3 {
+  color: #333;
+  font-family: inherit;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.word-preview h4 {
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.word-preview p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.word-preview a {
+  color: #0070f3;
+  text-decoration: underline;
+}
+
+.word-preview ul {
+  list-style-type: disc;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.word-preview ol {
+  list-style-type: decimal;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.word-preview li {
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+.word-preview blockquote {
+  border-left: 4px solid #ddd;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  background-color: #f9f9f9;
+  font-style: italic;
+}
+
+.word-preview pre {
+  background-color: #f6f8fa;
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.9rem;
+  overflow-x: auto;
+  border: 1px solid #ddd;
+}
+
+.word-preview code {
+  font-family: 'Consolas', 'Courier New', monospace;
+  background-color: #f6f8fa;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+  border: 1px solid #e1e4e8;
+}
+
+.word-preview hr {
+  border: 0;
+  border-top: 1px solid #ddd;
+  margin: 1.5rem 0;
+}
+
+.word-preview table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.word-preview th, 
+.word-preview td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+}
+
+.word-preview th {
+  background-color: #f6f8fa;
+  font-weight: 600;
 }
