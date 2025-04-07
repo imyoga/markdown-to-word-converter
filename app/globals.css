@@ -265,3 +265,11 @@ body {
   background-color: #f6f8fa;
   font-weight: 600;
 }
+
+.word-preview strong {
+  font-weight: bold;
+}
+
+.word-preview em {
+  font-style: italic;
+}

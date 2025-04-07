@@ -88,12 +88,24 @@ Enjoy using the converter!`);
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = wordPreviewContent.innerHTML;
 
-    // Apply word preview styles to ensure light theme is preserved
+    // Apply word preview styles to ensure all formatting is preserved
     tempDiv.className = "word-preview";
     tempDiv.style.position = "fixed";
     tempDiv.style.left = "-99999px";
     tempDiv.style.backgroundColor = "white";
     tempDiv.style.color = "#333";
+    
+    // Ensure bold and italic styles are explicitly set
+    const boldElements = tempDiv.querySelectorAll('strong');
+    boldElements.forEach(el => {
+      el.style.fontWeight = 'bold';
+    });
+    
+    const italicElements = tempDiv.querySelectorAll('em');
+    italicElements.forEach(el => {
+      el.style.fontStyle = 'italic';
+    });
+    
     tempDiv.setAttribute("contenteditable", "true");
     document.body.appendChild(tempDiv);
 
@@ -287,6 +299,12 @@ Enjoy using the converter!`);
                         {...props}
                       />
                     );
+                  },
+                  strong({ node, ...props }) {
+                    return <strong style={{ fontWeight: "bold" }} {...props} />;
+                  },
+                  em({ node, ...props }) {
+                    return <em style={{ fontStyle: "italic" }} {...props} />;
                   },
                 }}
               >
