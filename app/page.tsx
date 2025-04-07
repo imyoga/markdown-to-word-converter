@@ -107,10 +107,13 @@ Enjoy using the converter!`)
     // Create a temporary element with the content
     const tempDiv = document.createElement("div")
     tempDiv.innerHTML = wordPreviewContent.innerHTML
-
-    // Apply styles to make it rich text
+    
+    // Apply word preview styles to ensure light theme is preserved
+    tempDiv.className = "word-preview"
     tempDiv.style.position = "fixed"
     tempDiv.style.left = "-99999px"
+    tempDiv.style.backgroundColor = "white"
+    tempDiv.style.color = "#333"
     tempDiv.setAttribute("contenteditable", "true")
     document.body.appendChild(tempDiv)
 
