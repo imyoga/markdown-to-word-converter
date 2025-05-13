@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Upload, Copy, FileText } from "lucide-react";
+import { Upload, Copy, FileText, Download } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -138,6 +138,51 @@ Enjoy using the converter!`);
       });
   };
 
+  const downloadWordDocument = () => {
+    const wordPreviewContent = wordPreviewRef.current?.querySelector(".word-preview");
+    if (!wordPreviewContent) return;
+
+    // Get the HTML content
+    const htmlContent = `
+      <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word'>
+      <head>
+        <meta charset="utf-8">
+        <title>Markdown to Word Document</title>
+        <style>
+          body { font-family: 'Calibri', sans-serif; }
+          pre { background-color: #f6f8fa; padding: 10px; border: 1px solid #ddd; white-space: pre-wrap; }
+          code { background-color: #f6f8fa; color: #333; padding: 2px 4px; border: 1px solid #e1e4e8; border-radius: 3px; }
+          blockquote { border-left: 4px solid #ddd; background-color: #f9f9f9; padding-left: 10px; font-style: italic; }
+          strong { font-weight: bold; }
+          em { font-style: italic; }
+          ul { list-style-type: disc; padding-left: 20px; }
+          ol { list-style-type: decimal; padding-left: 20px; }
+        </style>
+      </head>
+      <body>
+        ${wordPreviewContent.innerHTML}
+      </body>
+      </html>
+    `;
+
+    // Create a Blob with the HTML content
+    const blob = new Blob([htmlContent], { type: 'application/msword' });
+    
+    // Create a download link
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'document.doc';
+    
+    // Append the link to the body
+    document.body.appendChild(link);
+    
+    // Click the link to trigger the download
+    link.click();
+    
+    // Remove the link
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold text-center mb-8">
@@ -261,9 +306,14 @@ Enjoy using the converter!`);
         <div className="space-y-4">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-semibold">Word Preview</h3>
-            <Button variant="outline" size="sm" onClick={copyWordContent}>
-              <Copy className="mr-2 h-4 w-4" /> Copy as Rich Text
-            </Button>
+            <div className="flex space-x-2">
+              <Button variant="outline" size="sm" onClick={copyWordContent}>
+                <Copy className="mr-2 h-4 w-4" /> Copy as Rich Text
+              </Button>
+              <Button variant="outline" size="sm" onClick={downloadWordDocument}>
+                <Download className="mr-2 h-4 w-4" /> Download as .doc
+              </Button>
+            </div>
           </div>
 
           <div
