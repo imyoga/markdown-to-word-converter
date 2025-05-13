@@ -126,6 +126,18 @@ Enjoy using the converter!`);
     alert("Content copied to clipboard in rich text format!");
   };
 
+  const copyMarkdownContent = () => {
+    // Copy the raw markdown content to clipboard
+    navigator.clipboard.writeText(markdownContent)
+      .then(() => {
+        alert("Markdown content copied to clipboard!");
+      })
+      .catch(err => {
+        console.error('Failed to copy markdown: ', err);
+        alert("Failed to copy markdown content.");
+      });
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold text-center mb-8">
@@ -191,7 +203,12 @@ Enjoy using the converter!`);
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left side - Markdown preview */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold mb-2">Markdown Preview</h3>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-lg font-semibold">Markdown Preview</h3>
+            <Button variant="outline" size="sm" onClick={copyMarkdownContent}>
+              <Copy className="mr-2 h-4 w-4" /> Copy Markdown
+            </Button>
+          </div>
           <div
             ref={markdownPreviewRef}
             className="border rounded-lg p-4 bg-[#0d1117] text-white dark"
