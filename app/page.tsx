@@ -138,6 +138,78 @@ Enjoy using the converter!`);
       });
   };
 
+  const convertToWhatsAppFormat = (markdown: string): string => {
+    let whatsappText = markdown;
+    
+    // Handle code blocks first (with language specifiers) - remove language and keep content
+    whatsappText = whatsappText.replace(/```\w*\n?([\s\S]*?)```/g, '```$1```');
+    
+    // Convert inline code (`code`) to WhatsApp monospace (```code```)
+    whatsappText = whatsappText.replace(/`([^`]+?)`/g, '```$1```');
+    
+    // Convert headers to bold and italic - use placeholders to protect them
+    whatsappText = whatsappText.replace(/^###### (.+)$/gm, '<<HEADER>>$1<<HEADER>>');
+    whatsappText = whatsappText.replace(/^##### (.+)$/gm, '<<HEADER>>$1<<HEADER>>');
+    whatsappText = whatsappText.replace(/^#### (.+)$/gm, '<<HEADER>>$1<<HEADER>>');
+    whatsappText = whatsappText.replace(/^### (.+)$/gm, '<<HEADER>>$1<<HEADER>>');
+    whatsappText = whatsappText.replace(/^## (.+)$/gm, '<<HEADER>>$1<<HEADER>>');
+    whatsappText = whatsappText.replace(/^# (.+)$/gm, '<<HEADER>>$1<<HEADER>>');
+    
+    // Convert bold markdown (**text** or __text__) to WhatsApp bold (*text*)
+    whatsappText = whatsappText.replace(/\*\*([^\*]+?)\*\*/g, '<<BOLD>>$1<<BOLD>>');
+    whatsappText = whatsappText.replace(/__([^_]+?)__/g, '<<BOLD>>$1<<BOLD>>');
+    
+    // Convert strikethrough (~~text~~) to WhatsApp strikethrough (~text~)
+    whatsappText = whatsappText.replace(/~~([^~]+?)~~/g, '~$1~');
+    
+    // Convert italic markdown (*text* or _text_) to WhatsApp italic (_text_)
+    // Use placeholders to avoid conflicts
+    whatsappText = whatsappText.replace(/\*([^\*]+?)\*/g, '<<ITALIC>>$1<<ITALIC>>');
+    whatsappText = whatsappText.replace(/_([^_]+?)_/g, '<<ITALIC>>$1<<ITALIC>>');
+    
+    // Replace placeholders with WhatsApp formatting
+    whatsappText = whatsappText.replace(/<<HEADER>>(.+?)<<HEADER>>/g, '*_$1_*');
+    whatsappText = whatsappText.replace(/<<BOLD>>/g, '*');
+    whatsappText = whatsappText.replace(/<<ITALIC>>/g, '_');
+    
+    // Convert blockquotes (> text) - WhatsApp doesn't have native blockquotes, 
+    // but we can use the > symbol which WhatsApp recognizes
+    whatsappText = whatsappText.replace(/^>\s+(.+)$/gm, '> _$1_');
+    
+    // Convert links [text](url) to "text (url)"
+    whatsappText = whatsappText.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1 ($2)');
+    
+    // Clean up horizontal rules
+    whatsappText = whatsappText.replace(/^[-*_]{3,}$/gm, '────────────');
+    
+    // Convert unordered lists (- or *) to bullet points
+    whatsappText = whatsappText.replace(/^[-*]\s+(.+)$/gm, '• $1');
+    
+    // Convert ordered lists (1. 2. etc.) to numbered format
+    whatsappText = whatsappText.replace(/^\d+\.\s+(.+)$/gm, (match, content, offset, string) => {
+      const lines = string.substring(0, offset).split('\n');
+      const currentListItems = lines.filter((line: string) => /^\d+\.\s+/.test(line)).length;
+      return `${currentListItems + 1}. ${content}`;
+    });
+    
+    // Clean up extra whitespace but preserve intentional line breaks
+    whatsappText = whatsappText.replace(/\n{3,}/g, '\n\n');
+    
+    return whatsappText.trim();
+  };
+
+  const copyWhatsAppContent = () => {
+    const whatsappFormatted = convertToWhatsAppFormat(markdownContent);
+    navigator.clipboard.writeText(whatsappFormatted)
+      .then(() => {
+        alert("Content copied in WhatsApp format!");
+      })
+      .catch(err => {
+        console.error('Failed to copy WhatsApp format: ', err);
+        alert("Failed to copy WhatsApp formatted content.");
+      });
+  };
+
   const downloadWordDocument = () => {
     const wordPreviewContent = wordPreviewRef.current?.querySelector(".word-preview");
     if (!wordPreviewContent) return;
@@ -250,9 +322,14 @@ Enjoy using the converter!`);
         <div className="space-y-4">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-semibold">Markdown Preview</h3>
-            <Button variant="outline" size="sm" onClick={copyMarkdownContent}>
-              <Copy className="mr-2 h-4 w-4" /> Copy Markdown
-            </Button>
+            <div className="flex space-x-2">
+              <Button variant="outline" size="sm" onClick={copyMarkdownContent}>
+                <Copy className="mr-2 h-4 w-4" /> Copy Markdown
+              </Button>
+              <Button variant="outline" size="sm" onClick={copyWhatsAppContent}>
+                <Copy className="mr-2 h-4 w-4" /> Copy for WhatsApp
+              </Button>
+            </div>
           </div>
           <div
             ref={markdownPreviewRef}
