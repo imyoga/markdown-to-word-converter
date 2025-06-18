@@ -322,14 +322,9 @@ Enjoy using the converter!`);
         <div className="space-y-4">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-semibold">Markdown Preview</h3>
-            <div className="flex space-x-2">
-              <Button variant="outline" size="sm" onClick={copyMarkdownContent}>
-                <Copy className="mr-2 h-4 w-4" /> Copy Markdown
-              </Button>
-              <Button variant="outline" size="sm" onClick={copyWhatsAppContent}>
-                <Copy className="mr-2 h-4 w-4" /> Copy for WhatsApp
-              </Button>
-            </div>
+            <Button variant="outline" size="sm" onClick={copyMarkdownContent}>
+              <Copy className="mr-2 h-4 w-4" /> Copy Markdown
+            </Button>
           </div>
           <div
             ref={markdownPreviewRef}
@@ -386,6 +381,9 @@ Enjoy using the converter!`);
             <div className="flex space-x-2">
               <Button variant="outline" size="sm" onClick={copyWordContent}>
                 <Copy className="mr-2 h-4 w-4" /> Copy as Rich Text
+              </Button>
+              <Button variant="outline" size="sm" onClick={copyWhatsAppContent}>
+                <Copy className="mr-2 h-4 w-4" /> Copy for WhatsApp
               </Button>
               <Button variant="outline" size="sm" onClick={downloadWordDocument}>
                 <Download className="mr-2 h-4 w-4" /> Download as .doc
